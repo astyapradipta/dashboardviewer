@@ -1,5 +1,5 @@
 // Initialize the viz variable 
-var vizMedicareIP01, vizMedicareOP01, vizSacPoliceDispatch;
+var vizMedicareIP01, vizMedicareOP01, vizSacPoliceDispatch, vizlpg;
 
 window.onload= function() {
 // When the webpage has loaded, load the viz
@@ -76,6 +76,44 @@ window.onload= function() {
 			// Cross-filter: Apply "Provider State" filter criteria to "Medicare Inpatient Charge Analysis 01"
 			// with single mark or multiple marks
 			setFilterTo(vizMedicareIP01, 'IP Map', 'Provider State', arrayFilterList);			
+		});
+	});
+	
+	var placeholder04 = document.getElementById('lpg');
+	//var vizURL01 = 'https://public.tableau.com/views/MedicareChargeProject_0/IPChargeDashboard';
+	var vizURL04 = 'https://public.tableau.com/views/dasborlpg3kgcontoh/halamanutama?:embed=y&:display_count=yes&:origin=viz_share_link';	
+	var options04 = {
+	    width: '1280px',
+		height: '720px',
+		hideToolbar: true,
+		hideTabs: true
+	};
+
+	vizlpg = new tableau.Viz(placeholder04, vizURL04, options04);
+
+	// Listen for filter change/selection for "Medicare Inpatient Charge Analysis 01"
+	vizlpg.addEventListener('filterchange', function(filterEvent) {
+
+		//console.log('Event Listener Activated.'); //Debug code
+
+		var arrayFilterList = [];
+		filterEvent.getFilterAsync().then( function(field){
+			var field_name = field.getFieldName();
+			var field_type = field.getFilterType();
+			if (field_name == "Provider State") {
+				var data_values = field.getAppliedValues();
+				for (i = 0; i < data_values.length; i++) {
+					var selectedFilterSingle = data_values[i].value;
+					
+					// Array manipulation: Concatenate multiple filter values into the array
+					arrayFilterList.push(selectedFilterSingle);
+				}
+			}
+			console.log(arrayFilterList);
+
+			// Cross-filter: Apply "Provider State" filter criteria to "Medicare Outpatient Charge Analysis 01"
+			// with single mark or multiple marks
+			setFilterTo(vizlpg, 'OP Map', 'Provider State', arrayFilterList);			
 		});
 	});
 	
